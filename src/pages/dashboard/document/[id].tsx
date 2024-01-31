@@ -14,7 +14,7 @@ export default function Document() {
   useEffect(() => {
     const getDocumentURL = async () => {
       if (data && data[0]) {
-        const { data: urlData, error } = await supabase.storage
+        const { data: urlData } = await supabase.storage
           .from("records")
           .getPublicUrl(`${data[0].document}`);
         setDocumentURL(urlData?.publicUrl);

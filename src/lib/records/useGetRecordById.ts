@@ -5,6 +5,7 @@ import { Tables } from "../../../types/supabase-database";
 export const useGetRecordById = (id: string | undefined) => {
   const res = useQuery<Tables<"records">>(
     "getRecordById",
+    //@ts-ignore
     async () => {
       const { data, error } = await supabase
         .from("records")

@@ -18,7 +18,7 @@ export default function RecordCard({ record }: any) {
   //   console.log(record);
 
   const getDocumentURL = async () => {
-    const { data, error } = await supabase.storage
+    const { data } = await supabase.storage
       .from("records")
       .getPublicUrl(`${record.document}`);
     setDocumentURL(data?.publicUrl);

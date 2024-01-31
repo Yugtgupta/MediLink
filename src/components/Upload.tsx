@@ -96,6 +96,7 @@ export default function Upload() {
 
       //@ts-ignore
       const res = await supabase.from("records").insert({
+        //@ts-ignore
         user_id: user?.id,
         name: file.name,
         date: adjustedDate.toISOString(),
