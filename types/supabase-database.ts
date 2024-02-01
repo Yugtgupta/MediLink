@@ -9,6 +9,64 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      links: {
+        Row: {
+          created_at: string
+          id: number
+          link: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          link?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          link?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "links_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
+      }
+      notes: {
+        Row: {
+          created_at: string
+          id: number
+          note: string | null
+          record_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          note?: string | null
+          record_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          note?: string | null
+          record_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "records"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       records: {
         Row: {
           created_at: string
@@ -16,7 +74,7 @@ export interface Database {
           document: string | null
           id: number
           name: string | null
-          user_id: number | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -24,7 +82,7 @@ export interface Database {
           document?: string | null
           id?: number
           name?: string | null
-          user_id?: number | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -32,30 +90,43 @@ export interface Database {
           document?: string | null
           id?: number
           name?: string | null
-          user_id?: number | null
+          user_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "records_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       users: {
         Row: {
+          age: number | null
+          bloodGroup: string | null
           created_at: string
+          gender: Database["public"]["Enums"]["gender"] | null
+          height: number | null
           id: number
+          isOnboarded: boolean | null
+          user_id: string
+          weight: number | null
         }
         Insert: {
+          age?: number | null
+          bloodGroup?: string | null
           created_at?: string
+          gender?: Database["public"]["Enums"]["gender"] | null
+          height?: number | null
           id?: number
+          isOnboarded?: boolean | null
+          user_id: string
+          weight?: number | null
         }
         Update: {
+          age?: number | null
+          bloodGroup?: string | null
           created_at?: string
+          gender?: Database["public"]["Enums"]["gender"] | null
+          height?: number | null
           id?: number
+          isOnboarded?: boolean | null
+          user_id?: string
+          weight?: number | null
         }
         Relationships: []
       }
@@ -67,7 +138,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      gender: "male" | "female"
     }
     CompositeTypes: {
       [_ in never]: never

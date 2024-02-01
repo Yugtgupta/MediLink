@@ -1,3 +1,4 @@
+import { Card, CardHeader } from "@/components/ui/card";
 import { SignIn, UserProfile } from "@clerk/nextjs";
 
 export default function Profile() {

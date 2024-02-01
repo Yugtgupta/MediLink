@@ -3,9 +3,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 import { ClerkLoaded, ClerkLoading, ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from "next/app";
-
+import { RecoilRoot } from "recoil";
 import { DNA } from "react-loader-spinner";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { AuthContext, AuthContextProvider } from "@/lib/auth";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -29,7 +30,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </div>
           </ClerkLoading>
           <ClerkLoaded>
-            <Component {...pageProps} />
+            <AuthContextProvider>
+              <Component {...pageProps} />
+            </AuthContextProvider>
           </ClerkLoaded>
         </QueryClientProvider>
       </ThemeProvider>

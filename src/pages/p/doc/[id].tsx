@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { addNote } from "@/lib/notes/addNote";
 import { getNotes } from "@/lib/notes/getNotes";
-import Chatbot from "@/components/Chatbot";
 
 export default function Document() {
   const router = useRouter();
@@ -36,9 +36,17 @@ export default function Document() {
   const { data, isLoading } = useGetRecordById(router.query.id as string);
   const [fileType, setFileType] = useState<string>("");
   const [documentURL, setDocumentURL] = useState<string>("");
+
+  const [note, setNote] = useState();
+  const mutation = addNote();
+
+  const [notes, setNotes] = useState<any[]>([]);
+
   const { data: notesData } = getNotes({
     record_id: router.query.id as string,
   });
+  console.log(notesData);
+
   useEffect(() => {
     const getDocumentURL = async () => {
       if (data && data[0]) {
@@ -62,6 +70,15 @@ export default function Document() {
 
     getDocumentURL();
   }, [data]);
+  const handleAddNote = async () => {
+    //@ts-ignore
+    await mutation.mutate({
+      record_id: router.query.id as string,
+      note: note,
+    });
+    //@ts-ignore
+    setNote("");
+  };
   if (isLoading) {
     return (
       <div className="h-screen items-center flex flex-col justify-center ">
@@ -69,10 +86,9 @@ export default function Document() {
       </div>
     );
   }
+
   return (
     <div className="h-screen items-center flex flex-col justify-start bg-  #e0dede] ">
-      <Navbar />
-
       <div className="px-30 h-full flex w-full">
         <div className="w-full flex items-center justify-center p-12">
           {fileType === "image" && (
@@ -126,7 +142,6 @@ export default function Document() {
                     className="flex-1 bg-transparent placeholder:text-lg border-top-2 outline-none active:border-none focus-visible:ring-0 focus-visible:outline-none  focus-visible:ring-none focus-visible:ring-offset-0"
                   />
                 </form>
-                <Chatbot />
               </CardContent>
             </Card>
             <div className="flex-1 w-full flex items-start justify-center">
@@ -135,6 +150,22 @@ export default function Document() {
                   <CardTitle className="text-center">Doctor's Notes</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleAddNote();
+                    }}
+                  >
+                    <Input
+                      placeholder="Enter your note"
+                      value={note}
+                      onChange={(e) => {
+                        //@ts-ignore
+                        setNote(e.target.value);
+                      }}
+                    />
+                  </form>
                   <ScrollArea className="h-[300px] p-4">
                     {/*//@ts-ignore */}
                     {notesData?.map((note) => (
@@ -151,4 +182,42 @@ export default function Document() {
       </div>
     </div>
   );
+}
+
+//Make sure user can enter only through docs page
+//Make sure user can enter only through docs page
+//Make sure user can enter only through docs page
+export async function getServerSideProps(req, res) {
+  const { id } = req.query;
+  const { data, error } = await supabase
+    .from("records")
+    .select("*")
+    .eq("id", id);
+  if (data.length === 0) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  const { data: data2 } = await supabase
+    .from("links")
+    .select("*")
+    .eq("user_id", data[0].user_id);
+  console.log(data2);
+  if (data2.length === 0) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      data,
+    },
+  };
 }

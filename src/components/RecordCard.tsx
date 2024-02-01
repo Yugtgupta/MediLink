@@ -7,7 +7,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { format } from "date-fns";
 import Link from "next/link";
 
-export default function RecordCard({ record }: any) {
+export default function RecordCard({ record, p, link }: any) {
   pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.js",
     import.meta.url
@@ -38,8 +38,10 @@ export default function RecordCard({ record }: any) {
   useEffect(() => {
     getDocumentURL();
   });
+  console.log(p);
+
   return (
-    <Link href={`/dashboard/document/${record.id}`}>
+    <Link href={p ? `/p/doc/${record.id}` : `/dashboard/document/${record.id}`}>
       <Card className="w-64 h-96 cursor-pointer">
         <CardHeader className="truncate border-b-2">
           <CardTitle className="truncate">{record.name}</CardTitle>
